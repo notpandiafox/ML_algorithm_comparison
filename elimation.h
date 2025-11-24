@@ -13,6 +13,7 @@ void initializeBestFeatures(std::vector<int>& bestSetOfFeatures, int amountOfFea
 double findScoreOfSet(std::vector<std::vector<double>>&, std::vector<int>&);
 void printFeatures(std::vector<int> set, double score);
 void printBestFeature(std::vector<int> set, double score);
+bool setEmpty(std::vector<int> set);
 
 void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
 {
@@ -32,6 +33,11 @@ void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
 
     initializeBestFeatures(tmpLastSetOfFeatures, amountOfFeatures);
 
+    bestScore = findScoreOfSet(data, tmpLastSetOfFeatures);
+
+    printBestFeature(tmpLastSetOfFeatures, bestScore);
+
+
     //if -1 then it has already been eliminated
     for(int i = 0; i < data.size(); ++i)
     {
@@ -39,7 +45,7 @@ void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
 
         for(int j = 1; j <= amountOfFeatures; ++j)// j is the one we temporarily elim
         {
-            if(tmpSetOfFeatures.at(j) == -1)
+            if(tmpSetOfFeatures.at(j) == -1 || setEmpty(tmpSetOfFeatures))
             {
                 continue;
             }
@@ -87,6 +93,17 @@ void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
 
     std::cout << "} , which has an accuracy of " << bestScore << "%" << std::endl;;
 
+}
+
+bool setEmpty(std::vector<int> set)
+{
+    for(int num : set)
+    {
+        if(num != -1)
+            return false;
+    }
+
+    return true;
 }
 
 void initializeBestFeatures(std::vector<int>& bestSetOfFeatures, int amountOfFeatures)
@@ -138,7 +155,7 @@ void printBestFeature(std::vector<int> set, double score)
         if(num != -1)
             std::cout << num << ",";
     }   
-    std::cout << "was best, accuracy  is " << score << "%" << std::endl;
+    std::cout << "} was best, accuracy  is " << score << "%" << std::endl;
     std::cout << std::endl;
 }
 
