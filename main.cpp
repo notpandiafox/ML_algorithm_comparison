@@ -36,7 +36,7 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-bool getGroundTruth(std::vector<double> dataPoint) { return dataPoint.at(0) == 1; }
+// bool getGroundTruth(std::vector<double> dataPoint) { return dataPoint.at(0) == 1; }
 
 
 //ListFeatureFunction is an array of functions so treat them as such

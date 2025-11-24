@@ -2,6 +2,10 @@
 #include <iostream>
 #include <string>
 
+bool getGroundTruth(std::vector<double> dataPoint) { return dataPoint.at(0) == 1; }
+bool ft0(std::vector<double> dataPoint) {
+    return 1;
+}
 bool getEstimate(const std::vector<double>& dataPoint,
                  const std::vector<std::function<bool(const std::vector<double>)>>& listFeatureFunctions)
 {
@@ -15,6 +19,7 @@ bool getEstimate(const std::vector<double>& dataPoint,
     return guesses.at(rand() % guesses.size());
 }
 std::string ftsToString(std::vector<int>& fts) {
+    if (fts.size() == 0) return "{}";
     std::string printout = "{";
     for (int ft : fts) {
         printout += std::to_string(ft + 1);
@@ -27,7 +32,7 @@ std::string ftsToString(std::vector<int>& fts) {
 int classAUsingFeatures(std::vector<std::vector<double>> dataset, std::vector<std::function<bool(const std::vector<double>)>>& ftFunctions) {
     int classA = 0;
     for (std::vector<double> datapoint : dataset) {
-        if (getEstimate(datapoint, ftFunctions)) classA++;
+        if (getEstimate(datapoint, ftFunctions) == getGroundTruth(datapoint)) classA++;
     }
     return classA;
 }
@@ -43,8 +48,11 @@ void forwardSelection(const std::vector<std::vector<double>>& dataset, const std
     }
     std::cout << "Beginning search!" << std::endl;
 
-    // TODO: init to default rate
-    double bestAccuracy = 0.0;
+    int initialEstimate = 0;
+    for (std::vector<double> datapoint : dataset) {
+        if (getGroundTruth(datapoint)) initialEstimate++;
+    }
+    double bestAccuracy = (double) initialEstimate / dataset.size();
     std::cout << "Using no features and 'random' evaluation, I get an accuracy of " << bestAccuracy * 100.0 << "%" << std::endl;
 
 
