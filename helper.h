@@ -5,6 +5,19 @@
 #include <functional>
 #include <random>
 
+bool ft1(std::vector<double> dataPoint) {
+    return (dataPoint.at(1) == 1);
+}
+bool ft2(std::vector<double> dataPoint) {
+    return (dataPoint.at(2) == 1);
+}
+bool ft3(std::vector<double> dataPoint) {
+    return (dataPoint.at(3) == 1);
+}
+bool ft4(std::vector<double> dataPoint) {
+    return (dataPoint.at(4) == 1);
+}
+
 bool getGroundTruth(std::vector<double> dataPoint) { return dataPoint.at(0) == 1; }
 
 
