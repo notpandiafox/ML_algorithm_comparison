@@ -16,7 +16,7 @@ std::string ftsToString(std::vector<int>& fts) {
 int classAUsingFeatures(std::vector<std::vector<double>> dataset, std::vector<std::function<bool(const std::vector<double>)>>& ftFunctions) {
     int classA = 0;
     for (std::vector<double> datapoint : dataset) {
-        if (getEstimate(datapoint, ftFunctions) == getGroundTruth(datapoint)) classA++;
+        if (getEstimateT(datapoint, ftFunctions) == getGroundTruth(datapoint)) classA++;
     }
     return classA;
 }

@@ -30,15 +30,15 @@ int main(int argc, char const *argv[])
     if (algorithmSelection == 1 || algorithmSelection == 2 || algorithmSelection == 3) {
         switch (algorithmSelection) {
             case 1:
-                std::cout << "Running Forward Selection Algorithm:" << std::endl << std::endl;
+                std::cout << std::endl << "Running Forward Selection Algorithm:" << std::endl << std::endl;
                 forwardSelection(data, fctFuncts);
                 break;
             case 2:
-                std::cout << "Running Backward Elimination Algorithm:" << std::endl << std::endl;
+                std::cout << std::endl << "Running Backward Elimination Algorithm:" << std::endl << std::endl;
                 backTracing(data, 4);
                 break;
             case 3:
-                std::cout << "Running Oscar's and Terek's Special Algorithm:" << std::endl << std::endl;
+                std::cout << std::endl << "Running Oscar's and Terek's Special Algorithm:" << std::endl << std::endl;
                 break;
             default:
                 break;

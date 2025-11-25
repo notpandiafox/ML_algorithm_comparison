@@ -1,3 +1,6 @@
+#ifndef HELPER_H
+#define HELPER_H
+
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -22,7 +25,7 @@ bool getGroundTruth(std::vector<double> dataPoint) { return dataPoint.at(0) == 1
 
 
 //ListFeatureFunction is an array of functions so treat them as such
-bool getEstimate(const std::vector<double>& dataPoint,
+bool getEstimateT(const std::vector<double>& dataPoint,
                  const std::vector<std::function<bool(const std::vector<double>)>>& listFeatureFunctions)
 {
     std::vector<bool> guesses;
@@ -55,3 +58,4 @@ bool getEstimate(const std::vector<double>& dataPoint,
 
     return guesses.at(rand() % guesses.size());
 }
+#endif

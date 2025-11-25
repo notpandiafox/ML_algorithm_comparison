@@ -34,6 +34,11 @@
         "mutex": "cpp",
         "optional": "cpp",
         "streambuf": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "istream": "cpp",
+        "bitset": "cpp",
+        "cwctype": "cpp",
+        "print": "cpp",
+        "variant": "cpp"
     }
 }

@@ -1,6 +1,6 @@
 #ifndef ELIMATION_H
 #define ELIMATION_H
-
+#include <vector>
 #include <unordered_map>
 #include <string>
 #include <iostream>
