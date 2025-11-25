@@ -1,5 +1,5 @@
 #include "selection.h"
-#include "elimation.h"
+#include "elimination.h"
 #include "helper.h"
 
 std::vector<std::vector<double>> data {

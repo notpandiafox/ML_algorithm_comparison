@@ -1,3 +1,6 @@
+#ifndef ELIMATION_H
+#define ELIMATION_H
+
 #include <vector>
 #include <iostream>
 #include <string>
@@ -84,3 +87,4 @@ void forwardSelection(const std::vector<std::vector<double>>& dataset, const std
     // print: Finished search!! The best feature subset is {4,1,2}, which has an accuracy of 76.4%
     std::cout << std::endl << "Finished search!! The best feature subset is " << ftsToString(selectedFeatures) << ", which has an accuracy of " << bestAccuracy * 100.0 << "%" << std::endl;
 }
+#endif
