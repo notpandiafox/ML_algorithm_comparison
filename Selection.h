@@ -1,23 +1,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
-
-bool getGroundTruth(std::vector<double> dataPoint) { return dataPoint.at(0) == 1; }
-bool ft0(std::vector<double> dataPoint) {
-    return 1;
-}
-bool getEstimate(const std::vector<double>& dataPoint,
-                 const std::vector<std::function<bool(const std::vector<double>)>>& listFeatureFunctions)
-{
-    std::vector<bool> guesses;
-
-    for (auto& ft : listFeatureFunctions)
-    {
-        guesses.push_back(ft(dataPoint));
-    }
-
-    return guesses.at(rand() % guesses.size());
-}
+#include "helper.h"
 std::string ftsToString(std::vector<int>& fts) {
     if (fts.size() == 0) return "{}";
     std::string printout = "{";
@@ -32,7 +16,7 @@ std::string ftsToString(std::vector<int>& fts) {
 int classAUsingFeatures(std::vector<std::vector<double>> dataset, std::vector<std::function<bool(const std::vector<double>)>>& ftFunctions) {
     int classA = 0;
     for (std::vector<double> datapoint : dataset) {
-        if (getEstimate(datapoint, ftFunctions) == getGroundTruth(datapoint)) classA++;
+        if (getEstimateT(datapoint, ftFunctions) == getGroundTruth(datapoint)) classA++;
     }
     return classA;
 }
@@ -75,7 +59,7 @@ void forwardSelection(const std::vector<std::vector<double>>& dataset, const std
             // print: Using feature(s) {1,2} accuracy is 58.9%
             std::vector<int> tempFts = usedFeatures;
             tempFts.push_back(ft);
-            std::cout << "Using feature(s) " << ftsToString(tempFts) << " accuracy is " << calcAccuracy * 100.0 << "%" << std::endl; 
+            std::cout << "Using feature(s) " << ftsToString(tempFts) << " accuracy is " << calcAccuracy * 100.0 << "%" << std::endl << std::endl; 
         }
 
         usedFeatures.push_back(bestFeature);
@@ -90,7 +74,7 @@ void forwardSelection(const std::vector<std::vector<double>>& dataset, const std
             selectedFeatures.push_back(bestFeature);
             bestFeatures.push_back(allFeatures[bestFeature]);
             bestAccuracy = tempAccuracy;
-            std::cout << "Feature set " << ftsToString(usedFeatures) << " was best, accuracy is " << bestAccuracy * 100.0 << "%" << std::endl;
+            std::cout << "Feature set " << ftsToString(usedFeatures) << " was best, accuracy is " << bestAccuracy * 100.0 << "%" << std::endl << std::endl;
         }
         if ((tempAccuracy <= bestAccuracy && (bestFeature != -1))) {
             std::cout << "(Warning, Accuracy has decreased!)" << std::endl;
@@ -98,5 +82,5 @@ void forwardSelection(const std::vector<std::vector<double>>& dataset, const std
         }
     }
     // print: Finished search!! The best feature subset is {4,1,2}, which has an accuracy of 76.4%
-    std::cout << "Finished search!! The best feature subset is " << ftsToString(selectedFeatures) << ", which has an accuracy of " << bestAccuracy * 100.0 << "%" << std::endl;
+    std::cout << std::endl << "Finished search!! The best feature subset is " << ftsToString(selectedFeatures) << ", which has an accuracy of " << bestAccuracy * 100.0 << "%" << std::endl;
 }
