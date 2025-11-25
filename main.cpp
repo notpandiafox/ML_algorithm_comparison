@@ -1,6 +1,5 @@
 #include "selection.h"
 #include "elimination.h"
-#include "helper.h"
 
 std::vector<std::vector<double>> data {
     {1,0,0,1,0},
