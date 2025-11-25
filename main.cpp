@@ -1,4 +1,3 @@
-#include "selection.h"
 #include "elimation.h"
 
 std::vector<std::vector<double>> data {
