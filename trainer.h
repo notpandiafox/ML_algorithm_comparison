@@ -106,14 +106,16 @@ struct Trainer {
             std::vector<Datapoint> normalizedDataset;
 
             int size = dataset.size();
-            std::vector<float> sums(0);
-            std::vector<float> mu(0);
-            std::vector<float> omega(0);
+            std::vector<float> sums(size);
+            std::vector<float> mu(size);
+            std::vector<float> omega(size);
             std::vector<Datapoint> normalizedTrainingSet;
-            std::vector<float> sumSquaredMean;
+            std::vector<float> sumSquaredMean(size);
+
             
             for (Datapoint entry : dataset) {
                 std::vector<float> features = entry.getFeatures();
+                float tempSum = 0;
                 for (int i = 0; i < features.size(); i++) {
                     // sum for ft i = sums for ft i thus far + current feature i value
                     sums[i] = sums.at(i) + features.at(i);
