@@ -5,7 +5,7 @@
 
 
 struct Datapoint { 
-    const std::vector<float> features;
+    std::vector<float> features;
     const int classLabel;
     const int trainingSetIdx;
 
@@ -22,11 +22,11 @@ struct Datapoint {
 };
 
 float calculateEuclideanDistance(Datapoint a, Datapoint b,  std::vector<int> featureIndices) {
-    float sum;
+    float sum = 0.0f;
     float delta;
     for (int idx : featureIndices) {
         delta = a.getFeatureByIndex(idx) - b.getFeatureByIndex(idx);
-        sum += pow(delta, 2);
+        sum += delta * delta;
     }
     return sqrt(sum);
 }
@@ -41,12 +41,12 @@ struct Trainer {
     
     int test(Datapoint testPoint, std::vector<int> featureIndices) {
         int predictedLabel = -1;
-        float closestDistance; 
+        float closestDistance = -1.0f; 
         float calculatedDistance;
         for (Datapoint comparisonPoint : trainingSet) {
             if (testPoint.getTrainingSetIdx() == comparisonPoint.getTrainingSetIdx()) { continue; }
             calculatedDistance = calculateEuclideanDistance(testPoint, comparisonPoint, featureIndices);
-            if (calculatedDistance < closestDistance) {
+            if ((calculatedDistance < closestDistance) || (closestDistance < 0)) {
                 closestDistance = calculatedDistance;
                 predictedLabel = comparisonPoint.getClassLabel();
             }
@@ -79,19 +79,56 @@ struct Trainer {
                 
                 while (file >> val) {
                     if (val == 1.0f || val == 2.0f) {
+                        prevClassLabel = nextClassLabel;
                         nextClassLabel = val;
                         break;
                     }
                     features.push_back(val);
                 }
-
+                std::cout << "New datapoint: class " << prevClassLabel << std::endl;
                 Datapoint newPoint(features, prevClassLabel, i);
                 i++;
                 trainingSet.push_back(newPoint);
             }
 
+            normalize(trainingSet);
+
+
             return trainingSet;
         }
+
+
+        void normalize(std::vector<Datapoint>& data) {
+            if (data.empty()) return;
+
+            int numFeatures = data[0].features.size();
+
+            std::vector<float> minVals(numFeatures,  std::numeric_limits<float>::infinity());
+            std::vector<float> maxVals(numFeatures, -std::numeric_limits<float>::infinity());
+
+            for (auto& point : data) {
+                for (int f = 0; f < numFeatures; f++) {
+                    float val = point.features[f];
+                    if (val < minVals[f]) minVals[f] = val;
+                    if (val > maxVals[f]) maxVals[f] = val;
+                }
+            }
+
+            for (auto& point : data) {
+                for (int f = 0; f < numFeatures; f++) {
+                    float minv = minVals[f];
+                    float maxv = maxVals[f];
+                    float range = maxv - minv;
+
+                    if (range > 0) {
+                        point.features[f] = (point.features[f] - minv) / range;
+                    } else {
+                        point.features[f] = 0.0f;
+                    }
+                }
+            }
+        }
+
 
 };
 
