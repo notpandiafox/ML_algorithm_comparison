@@ -2,10 +2,11 @@
 #include <fstream>
 #include <string>
 #include <cmath>
+#include <iostream>
 
 
 struct Datapoint { 
-    std::vector<float> features;
+    const std::vector<float> features;
     const int classLabel;
     const int trainingSetIdx;
 
@@ -16,6 +17,7 @@ struct Datapoint {
         trainingSetIdx(trainingSetIdx)
         {}
 
+    std::vector<float> getFeatures() { return features; }
     int getTrainingSetIdx() { return trainingSetIdx; }
     int getClassLabel() { return classLabel; }
     float getFeatureByIndex(int idx) { return features.at(idx); }
@@ -42,10 +44,11 @@ struct Trainer {
     int test(Datapoint testPoint, std::vector<int> featureIndices) {
         int predictedLabel = -1;
         float closestDistance = -1.0f; 
-        float calculatedDistance;
+        float calculatedDistance = 0;
         for (Datapoint comparisonPoint : trainingSet) {
             if (testPoint.getTrainingSetIdx() == comparisonPoint.getTrainingSetIdx()) { continue; }
             calculatedDistance = calculateEuclideanDistance(testPoint, comparisonPoint, featureIndices);
+            // std::cout << calculatedDistance << " < calculated | " << closestDistance << " < closest" << std::endl;
             if ((calculatedDistance < closestDistance) || (closestDistance < 0)) {
                 closestDistance = calculatedDistance;
                 predictedLabel = comparisonPoint.getClassLabel();
@@ -91,43 +94,66 @@ struct Trainer {
                 trainingSet.push_back(newPoint);
             }
 
-            normalize(trainingSet);
+            std::vector<Datapoint> normalizedTrainingSet = normalizeDataset(trainingSet);
 
 
-            return trainingSet;
+            return normalizedTrainingSet;
         }
 
 
-        void normalize(std::vector<Datapoint>& data) {
-            if (data.empty()) return;
+        std::vector<Datapoint> normalizeDataset(std::vector<Datapoint>& dataset) {
 
-            int numFeatures = data[0].features.size();
+            std::vector<Datapoint> normalizedDataset;
 
-            std::vector<float> minVals(numFeatures,  std::numeric_limits<float>::infinity());
-            std::vector<float> maxVals(numFeatures, -std::numeric_limits<float>::infinity());
-
-            for (auto& point : data) {
-                for (int f = 0; f < numFeatures; f++) {
-                    float val = point.features[f];
-                    if (val < minVals[f]) minVals[f] = val;
-                    if (val > maxVals[f]) maxVals[f] = val;
+            int size = dataset.size();
+            std::vector<float> sums(0);
+            std::vector<float> mu(0);
+            std::vector<float> omega(0);
+            std::vector<Datapoint> normalizedTrainingSet;
+            std::vector<float> sumSquaredMean;
+            
+            for (Datapoint entry : dataset) {
+                std::vector<float> features = entry.getFeatures();
+                for (int i = 0; i < features.size(); i++) {
+                    // sum for ft i = sums for ft i thus far + current feature i value
+                    sums[i] = sums.at(i) + features.at(i);
+                }
+                for (int i = 0; i < sums.size(); i++) {
+                    mu[i] = sums.at(i) / sums.size();
                 }
             }
 
-            for (auto& point : data) {
-                for (int f = 0; f < numFeatures; f++) {
-                    float minv = minVals[f];
-                    float maxv = maxVals[f];
-                    float range = maxv - minv;
 
-                    if (range > 0) {
-                        point.features[f] = (point.features[f] - minv) / range;
-                    } else {
-                        point.features[f] = 0.0f;
-                    }
+            for(Datapoint entry : dataset)
+            {
+                std::vector<float> features = entry.getFeatures();
+                for(int i = 0; i < features.size(); ++i)
+                {
+                    sumSquaredMean[i] += pow(features.at(i) - mu.at(i), 2);
                 }
             }
+            for(int i = 0; i < sumSquaredMean.size(); ++i)
+            {
+                // TODO: here?
+                omega[i] = sqrt(sumSquaredMean.at(i)/dataset.size());
+
+            }
+            for(Datapoint entry : dataset)
+            {
+                std::vector<float> normalizedFeatures;
+                std::vector<float> rawFeatures = entry.getFeatures();
+                for(int i = 0; i < rawFeatures.size(); ++i)
+                {
+                    // TODO: HERE?
+                    float xprime = ((rawFeatures.at(i) - mu.at(i)) / omega.at(i));
+                    normalizedFeatures.push_back(xprime);
+                }
+                Datapoint entryNorm = Datapoint(normalizedFeatures, entry.getClassLabel(), entry.getTrainingSetIdx());
+                normalizedTrainingSet.push_back(entryNorm);
+            }
+            return normalizedTrainingSet;
         }
+
 
 
 };
