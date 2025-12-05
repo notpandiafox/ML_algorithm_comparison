@@ -38,7 +38,7 @@ int main(int argc, char const *argv[])
         if(tmp == -1)
             break;
 
-        indicesSubSet.push_back(tmp);
+        indicesSubSet.push_back(tmp - 1);
     }
 
     valid.valid(indicesSubSet, filePath);

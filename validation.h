@@ -23,7 +23,7 @@ class Validation
             int actual = entry.getClassLabel();
             if (prediction == actual) {
                 accuratePredictionCounter++;
-                std::cout << "Entry #" << i << ") SUCCESS!" << prediction << "|" << actual << "]" << std::endl;
+                std::cout << "Entry #" << i << ") SUCCESS!" << std::endl;
             } else {
                 std::cout << "Entry #" << i << ") FAIL! [" << prediction << "|" << actual << "]" << std::endl;
             }
@@ -34,7 +34,7 @@ class Validation
 
         std::cout << "LOOCV using features: {";
         for (int idx : featureIndices) {
-            std::cout << idx << " ";
+            std::cout << idx + 1 << " ";
         }
         std::cout << "} has an accuracy of " << accuracy * 100.0 << "%" << std::endl << std::endl;
 

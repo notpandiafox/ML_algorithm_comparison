@@ -88,7 +88,6 @@ struct Trainer {
                     }
                     features.push_back(val);
                 }
-                std::cout << "New datapoint: class " << prevClassLabel << std::endl;
                 Datapoint newPoint(features, prevClassLabel, i);
                 i++;
                 trainingSet.push_back(newPoint);
@@ -105,12 +104,14 @@ struct Trainer {
 
             std::vector<Datapoint> normalizedDataset;
 
-            int size = dataset.size();
-            std::vector<float> sums(size);
-            std::vector<float> mu(size);
-            std::vector<float> omega(size);
+            Datapoint sample = dataset.at(0);
+            int featureCount = sample.getFeatures().size();
+            
+            std::vector<float> sums(featureCount);
+            std::vector<float> mu(featureCount);
+            std::vector<float> omega(featureCount);
             std::vector<Datapoint> normalizedTrainingSet;
-            std::vector<float> sumSquaredMean(size);
+            std::vector<float> sumSquaredMean(featureCount);
 
             
             for (Datapoint entry : dataset) {
@@ -120,9 +121,9 @@ struct Trainer {
                     // sum for ft i = sums for ft i thus far + current feature i value
                     sums[i] = sums.at(i) + features.at(i);
                 }
-                for (int i = 0; i < sums.size(); i++) {
-                    mu[i] = sums.at(i) / sums.size();
-                }
+            }
+            for (int i = 0; i < mu.size(); i++) {
+                 mu[i] = sums.at(i) / dataset.size();
             }
 
 
@@ -136,7 +137,6 @@ struct Trainer {
             }
             for(int i = 0; i < sumSquaredMean.size(); ++i)
             {
-                // TODO: here?
                 omega[i] = sqrt(sumSquaredMean.at(i)/dataset.size());
 
             }
