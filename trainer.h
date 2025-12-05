@@ -3,7 +3,6 @@
 #include <string>
 #include <cmath>
 
-float calculateEuclideanDistance(Datapoint, Datapoint, std::vector<int>);
 
 struct Datapoint { 
     const std::vector<float> features;
@@ -22,12 +21,24 @@ struct Datapoint {
     float getFeatureByIndex(int idx) { return features.at(idx); }
 };
 
+float calculateEuclideanDistance(Datapoint a, Datapoint b,  std::vector<int> featureIndices) {
+    float sum;
+    float delta;
+    for (int idx : featureIndices) {
+        delta = a.getFeatureByIndex(idx) - b.getFeatureByIndex(idx);
+        sum += pow(delta, 2);
+    }
+    return sqrt(sum);
+}
+
 struct Trainer {
     const std::vector<Datapoint> trainingSet;
 
     Trainer(std::string filePath) : trainingSet(loadTrainingSet(filePath)) {};
 
-
+    
+    std::vector<Datapoint> getTrainingSet() { return trainingSet; }
+    
     int test(Datapoint testPoint, std::vector<int> featureIndices) {
         int predictedLabel = -1;
         float closestDistance; 
@@ -40,6 +51,7 @@ struct Trainer {
                 predictedLabel = comparisonPoint.getClassLabel();
             }
         }
+        return predictedLabel;
     }
 
     private:
@@ -47,6 +59,9 @@ struct Trainer {
         std::vector<Datapoint> loadTrainingSet(std::string filePath) {
             std::ifstream file{filePath};
 
+            if (!file) {
+                throw("File not found!");
+            }
             int i = 0;
             float prevClassLabel;
             float nextClassLabel = -1.0f;
@@ -80,12 +95,3 @@ struct Trainer {
 
 };
 
-float calculateEuclideanDistance(Datapoint a, Datapoint b,  std::vector<int> featureIndices) {
-    float sum;
-    float delta;
-    for (int idx : featureIndices) {
-        delta = a.getFeatureByIndex(idx) - b.getFeatureByIndex(idx);
-        sum += pow(delta, 2);
-    }
-    return sqrt(sum);
-}
