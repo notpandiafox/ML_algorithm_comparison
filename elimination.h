@@ -1,5 +1,3 @@
-#ifndef ELIMINATION_H
-#define ELIMINATION_H
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -7,15 +5,17 @@
 #include <cmath>
 
 #include "helper.h"
+#include "validation.h"
 
-void backTracing(std::vector<std::vector<double>> data);
+void backTracing(std::string file, int);
 void initializeBestFeatures(std::vector<int>& bestSetOfFeatures, int amountOfFeatures);
 double findScoreOfSet(std::vector<std::vector<double>>&, std::vector<int>&);
 void printFeatures(std::vector<int> set, double score);
 void printBestFeature(std::vector<int> set, double score);
 bool setEmpty(std::vector<int> set);
+void copyVectorNoNeg(std::vector<int>&, std::vector<int>&);
 
-void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
+void backTracing(std::string file, int amountOfFeatures)
 {
     //assume that 0 is empty and 1 is 1, 2 is 2 etc.
     std::vector<int> bestSetOfFeatures;
@@ -23,7 +23,7 @@ void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
     std::vector<int> tmpLastSetOfFeatures;
     std::vector<int> tmpSetOfFeatures;
 
-    std::unordered_map<int,int> whatHasBeenEliminated;
+    Validation validator;
 
     double bestScore{0};
     double localBestScore{0};
@@ -33,18 +33,22 @@ void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
 
     initializeBestFeatures(tmpLastSetOfFeatures, amountOfFeatures);
 
-    bestScore = findScoreOfSet(data, tmpLastSetOfFeatures);
+    bestScore = validator.valid(tmpLastSetOfFeatures, file);
 
     printBestFeature(tmpLastSetOfFeatures, bestScore);
 
 
     //if -1 then it has already been eliminated
-    for(int i = 0; i < data.size(); ++i)
+    for(int i = 0; i < amountOfFeatures; ++i)
     {
+        std::vector<int> validVector;
+
         tmpSetOfFeatures = tmpLastSetOfFeatures;    
 
-        for(int j = 1; j <= amountOfFeatures; ++j)// j is the one we temporarily elim
+        for(int j = 0; j < tmpLastSetOfFeatures.size(); ++j)// j is the one we temporarily elim
         {
+            std::vector<int> validVector;
+
             if(tmpSetOfFeatures.at(j) == -1 || setEmpty(tmpSetOfFeatures))
             {
                 continue;
@@ -52,8 +56,9 @@ void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
 
             tmpSetOfFeatures[j] = -1;
 
+            copyVectorNoNeg(validVector, tmpSetOfFeatures);
 
-            tmpScore = findScoreOfSet(data, tmpSetOfFeatures);
+            tmpScore = validator.valid(validVector, file); //tmpSetOfFeatures
 
             printFeatures(tmpSetOfFeatures, tmpScore);
 
@@ -87,11 +92,11 @@ void backTracing(std::vector<std::vector<double>>& data, int amountOfFeatures)
     {
         if(bestSetOfFeatures.at(i) != -1)
         {
-            std::cout << bestSetOfFeatures.at(i) << ",";
+            std::cout << bestSetOfFeatures.at(i) + 1 << ",";
         }
     }
 
-    std::cout << "} , which has an accuracy of " << bestScore << "%" << std::endl;;
+    std::cout << "} , which has an accuracy of " << bestScore * 100.0 << "%" << std::endl;;
 
 }
 
@@ -106,13 +111,22 @@ bool setEmpty(std::vector<int> set)
     return true;
 }
 
+void copyVectorNoNeg(std::vector<int>& copyVector, std::vector<int>& OGvector)
+{
+    for(int stuffInVector : OGvector)
+    {
+        if(stuffInVector == -1)
+            continue;
+        
+        copyVector.push_back(stuffInVector);
+    }
+}
+
 void initializeBestFeatures(std::vector<int>& bestSetOfFeatures, int amountOfFeatures)
 {
-    bestSetOfFeatures.push_back(-1);
-
-    for(int i = 1; i < amountOfFeatures + 1; ++i)
+    for(int i = 0; i < amountOfFeatures; ++i)
     {
-        bestSetOfFeatures.push_back(i);
+            bestSetOfFeatures.push_back(i);
     }
 }
 
@@ -143,7 +157,7 @@ void printFeatures(std::vector<int> set, double score)
             std::cout << num << ",";
     }   
 
-    std::cout << "} accuracy is " << score << "%" << std::endl;
+    std::cout << "} accuracy is " << score * 100.0 << "%" << std::endl;
 
 }
 
@@ -155,9 +169,6 @@ void printBestFeature(std::vector<int> set, double score)
         if(num != -1)
             std::cout << num << ",";
     }   
-    std::cout << "} was best, accuracy  is " << score << "%" << std::endl;
+    std::cout << "} was best, accuracy  is " << score * 100.0 << "%" << std::endl;
     std::cout << std::endl;
 }
-
-
-#endif
