@@ -8,7 +8,7 @@
         - Forward: Feature Subset: <your best feature subset>, Acc: <your accuracy on that feature subse
 */
 #include "selection.h"
-#include "elimination.h"
+//#include "elimination.h"
 #include "validation.h"
 
 #include <string>
@@ -88,7 +88,7 @@ int main(int argc, char const *argv[])
                 break;
             case 2:
                 std::cout << std::endl << "Running Backward Elimination Algorithm:" << std::endl << std::endl;
-                backTracing(data, 4);
+                //backTracing(data, 4);
                 break;
             case 3:
                 std::cout << std::endl << "Running Oscar's and Terek's Special Algorithm:" << std::endl << std::endl;
