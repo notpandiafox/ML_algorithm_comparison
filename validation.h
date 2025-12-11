@@ -28,6 +28,10 @@ class Validation
 
         accuracy = (float)accuratePredictionCounter / (float)totalDatapoints;
 
+        for (int idx : featureIndices) {
+            std::cout << idx + 1 << " ";
+        }
+
         return accuracy;
     }
 

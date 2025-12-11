@@ -8,7 +8,7 @@
 #include <string>
 #include "helper.h"
 
-#define FEATURE_COUNT 10
+#define FEATURE_COUNT 9
 std::string ftsToString(std::vector<int>& fts) {
     if (fts.size() == 0) return "{}";
     std::string printout = "{";
@@ -20,13 +20,6 @@ std::string ftsToString(std::vector<int>& fts) {
     return printout;
 }
 
-int classAUsingFeatures(std::vector<std::vector<double>> dataset, std::vector<std::function<bool(const std::vector<double>)>>& ftFunctions) {
-    int classA = 0;
-    for (std::vector<double> datapoint : dataset) {
-        if (getEstimateT(datapoint, ftFunctions) == getGroundTruth(datapoint)) classA++;
-    }
-    return classA;
-}
 std::vector<int> forwardSelection(std::string filePath)
 {
     std::vector<int> bestFeatures;
@@ -37,7 +30,7 @@ std::vector<int> forwardSelection(std::string filePath)
     for (int i = 0; i < FEATURE_COUNT; i++) {
         unusedFeatures.push_back(i);
     }
-    std::cout << "Beginning search!" << std::endl;
+    std::cout << "Begingining search!" << std::endl;
 
     Validation valid;
    
@@ -85,7 +78,7 @@ std::vector<int> forwardSelection(std::string filePath)
             break;
         }
     }
-    // print: Finished search!! The best feature subset is {4,1,2}, which has an accuracy of 76.4%
-    std::cout <<std::endl << std::endl << "Finished search!! The best feature subset is " << ftsToString(bestFeatures) << ", which has an accuracy of " << bestAccuracy * 100.0 << "%";
+    
+    std::cout << std::endl << std::endl << "Finished search!! The best feature subset is " << ftsToString(bestFeatures) << ", which has an accuracy of " << bestAccuracy * 100.0 << "%";
     return bestFeatures;
 }

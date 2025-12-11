@@ -4,8 +4,8 @@
 #include <cmath>
 #include <iostream>
 
-#define CLASSA_LABEL 1.0f
-#define CLASSB_LABEL 2.0f
+#define CLASSA_LABEL 0.0f
+#define CLASSB_LABEL 1.0f
 
 struct Datapoint { 
     const std::vector<float> features;
