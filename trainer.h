@@ -4,6 +4,8 @@
 #include <cmath>
 #include <iostream>
 
+#define CLASSA_LABEL 1.0f
+#define CLASSB_LABEL 2.0f
 
 struct Datapoint { 
     const std::vector<float> features;
@@ -48,7 +50,6 @@ struct Trainer {
         for (Datapoint comparisonPoint : trainingSet) {
             if (testPoint.getTrainingSetIdx() == comparisonPoint.getTrainingSetIdx()) { continue; }
             calculatedDistance = calculateEuclideanDistance(testPoint, comparisonPoint, featureIndices);
-            // std::cout << calculatedDistance << " < calculated | " << closestDistance << " < closest" << std::endl;
             if ((calculatedDistance < closestDistance) || (closestDistance < 0)) {
                 closestDistance = calculatedDistance;
                 predictedLabel = comparisonPoint.getClassLabel();
@@ -73,15 +74,15 @@ struct Trainer {
 
             while(file >> val) {
                 std::vector<float> features;
-                if (val == 1.0f || val == 2.0f) {
+                if (val == CLASSA_LABEL || val == CLASSB_LABEL) {
                     if (nextClassLabel == -1.0f) { nextClassLabel = val; }
                     prevClassLabel = nextClassLabel;
-                } else if (val != 1.0f && val != 2.0f) {
+                } else if (val != CLASSA_LABEL && val != CLASSB_LABEL) {
                     features.push_back(val);
                 }
                 
                 while (file >> val) {
-                    if (val == 1.0f || val == 2.0f) {
+                    if (val == CLASSA_LABEL || val == CLASSB_LABEL) {
                         prevClassLabel = nextClassLabel;
                         nextClassLabel = val;
                         break;
@@ -146,7 +147,6 @@ struct Trainer {
                 std::vector<float> rawFeatures = entry.getFeatures();
                 for(int i = 0; i < rawFeatures.size(); ++i)
                 {
-                    // TODO: HERE?
                     float xprime = ((rawFeatures.at(i) - mu.at(i)) / omega.at(i));
                     normalizedFeatures.push_back(xprime);
                 }
