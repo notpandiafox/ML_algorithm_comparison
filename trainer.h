@@ -1,3 +1,4 @@
+#pragma once
 #include <vector>
 #include <fstream>
 #include <string>
@@ -6,6 +7,7 @@
 
 #define CLASSA_LABEL 1.0f
 #define CLASSB_LABEL 2.0f
+#define FEATURE_COUNT 40
 
 struct Datapoint { 
     const std::vector<float> features;
@@ -67,36 +69,30 @@ struct Trainer {
                 throw("File not found!");
             }
             int i = 0;
-            float prevClassLabel;
-            float nextClassLabel = -1.0f;
             std::vector<Datapoint> trainingSet;
             float val;
+            float classLabel;
 
             while(file >> val) {
                 std::vector<float> features;
-                if (val == CLASSA_LABEL || val == CLASSB_LABEL) {
-                    if (nextClassLabel == -1.0f) { nextClassLabel = val; }
-                    prevClassLabel = nextClassLabel;
-                } else if (val != CLASSA_LABEL && val != CLASSB_LABEL) {
-                    features.push_back(val);
-                }
                 
+                classLabel = val;
+
+                int j = 0;
                 while (file >> val) {
-                    if (val == CLASSA_LABEL || val == CLASSB_LABEL) {
-                        prevClassLabel = nextClassLabel;
-                        nextClassLabel = val;
+                    features.push_back(val);
+                    j++;
+                    if (j >= FEATURE_COUNT) {
+                        j = 0;
                         break;
                     }
-                    features.push_back(val);
                 }
-                Datapoint newPoint(features, prevClassLabel, i);
+                Datapoint newPoint(features, classLabel, i);
                 i++;
                 trainingSet.push_back(newPoint);
             }
 
             std::vector<Datapoint> normalizedTrainingSet = normalizeDataset(trainingSet);
-
-
             return normalizedTrainingSet;
         }
 
