@@ -4,7 +4,6 @@
 #include <iostream>
 #include <cmath>
 
-#include "helper.h"
 #include "validation.h"
 
 void backTracing(std::string file, int);
@@ -130,23 +129,23 @@ void initializeBestFeatures(std::vector<int>& bestSetOfFeatures, int amountOfFea
     }
 }
 
-double findScoreOfSet(std::vector<std::vector<double>>& data, std::vector<int>& set)
-{
-    std::vector<bool> predictions;
-    double predict{};
+// double findScoreOfSet(std::vector<std::vector<double>>& data, std::vector<int>& set)
+// {
+//     std::vector<bool> predictions;
+//     double predict{};
 
-    for(int i = 0; i < data.size(); ++i)
-    {
-        if(getEstimate(data.at(i), set) == getGroundTruth(data.at(i)))
-        {
-            ++predict;
-        }
-    }
+//     for(int i = 0; i < data.size(); ++i)
+//     {
+//         if(getEstimate(data.at(i), set) == getGroundTruth(data.at(i)))
+//         {
+//             ++predict;
+//         }
+//     }
 
-    double percentage = (predict / (double)data.size()) * 100.0;
+//     double percentage = (predict / (double)data.size()) * 100.0;
 
-    return std::round(percentage * 10.0) / 10.0;;
-}
+//     return std::round(percentage * 10.0) / 10.0;;
+// }
 
 void printFeatures(std::vector<int> set, double score)
 {

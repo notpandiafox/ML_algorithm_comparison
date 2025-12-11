@@ -65,7 +65,7 @@ int main(int argc, char const *argv[])
     std::string filePath;
 
 
-//     std::cin >> filePath;
+    std::cin >> filePath;
 
 
     std::cout << std::endl << std::endl 
@@ -89,9 +89,9 @@ int main(int argc, char const *argv[])
                 break;
             case 2:
                 std::cout << std::endl << "Running Backward Elimination Algorithm:" << std::endl << std::endl;
-                if(file == "fast.txt") backTracing(data, 10);
-                else if(file == "large.txt") backTracing(data, 40);
-                else backTracing(data, 6);
+                if(filePath == "fast.txt") backTracing(filePath, 10);
+                else if(filePath == "large.txt") backTracing(filePath, 40);
+                else backTracing(filePath, 6);
 
                 break;
             case 3:
