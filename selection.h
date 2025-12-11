@@ -1,12 +1,10 @@
 #pragma once
 
-
 #include "validation.h"
 
 #include <vector>
 #include <iostream>
 #include <string>
-#include "helper.h"
 #include "trainer.h"
 
 std::string ftsToString(std::vector<int>& fts) {
