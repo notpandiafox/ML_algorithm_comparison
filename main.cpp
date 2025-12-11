@@ -1,3 +1,12 @@
+/*
+    Group: Terek Johnson – tjohn108 – Session 023, Oscar La – ola002 – Session 021
+        - DatasetID: titanic-clean.txt
+        - Small Dataset Results:
+        - Forward: Feature Subset: {3, 5}, Acc: 92%
+        - Backward: Feature Subset: <your best feature subset>, Acc:<your acc. on that feature subset>
+        - Large Dataset Results:
+        - Forward: Feature Subset: <your best feature subset>, Acc: <your accuracy on that feature subse
+*/
 #include "selection.h"
 #include "elimination.h"
 #include "validation.h"

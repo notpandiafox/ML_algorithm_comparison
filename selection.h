@@ -7,8 +7,8 @@
 #include <iostream>
 #include <string>
 #include "helper.h"
+#include "trainer.h"
 
-#define FEATURE_COUNT 9
 std::string ftsToString(std::vector<int>& fts) {
     if (fts.size() == 0) return "{}";
     std::string printout = "{";
