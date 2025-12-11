@@ -1,10 +1,12 @@
-#ifndef ELIMATION_H
-#define ELIMATION_H
+#pragma once
+
+#include "validation.h"
 
 #include <vector>
 #include <iostream>
 #include <string>
-#include "helper.h"
+#include "trainer.h"
+
 std::string ftsToString(std::vector<int>& fts) {
     if (fts.size() == 0) return "{}";
     std::string printout = "{";
@@ -16,30 +18,21 @@ std::string ftsToString(std::vector<int>& fts) {
     return printout;
 }
 
-int classAUsingFeatures(std::vector<std::vector<double>> dataset, std::vector<std::function<bool(const std::vector<double>)>>& ftFunctions) {
-    int classA = 0;
-    for (std::vector<double> datapoint : dataset) {
-        if (getEstimateT(datapoint, ftFunctions) == getGroundTruth(datapoint)) classA++;
-    }
-    return classA;
-}
-void forwardSelection(const std::vector<std::vector<double>>& dataset, const std::vector<std::function<bool(const std::vector<double>)>> allFeatures)
+std::vector<int> forwardSelection(std::string filePath)
 {
-    std::vector<std::function<bool(const std::vector<double>)>> bestFeatures;
+    std::vector<int> bestFeatures;
     std::vector<int> unusedFeatures;
     std::vector<int> usedFeatures;
     std::vector<int> selectedFeatures;
 
-    for (int i = 0; i < allFeatures.size(); i++) {
+    for (int i = 0; i < FEATURE_COUNT; i++) {
         unusedFeatures.push_back(i);
     }
-    std::cout << "Beginning search!" << std::endl;
+    std::cout << "Begingining search!" << std::endl;
 
-    int initialEstimate = 0;
-    for (std::vector<double> datapoint : dataset) {
-        if (getGroundTruth(datapoint)) initialEstimate++;
-    }
-    double bestAccuracy = (double) initialEstimate / dataset.size();
+    Validation valid;
+   
+    double bestAccuracy = valid.valid({}, filePath);
     std::cout << "Using no features and 'random' evaluation, I get an accuracy of " << bestAccuracy * 100.0 << "%" << std::endl;
 
 
@@ -48,11 +41,10 @@ void forwardSelection(const std::vector<std::vector<double>>& dataset, const std
         int bestFeature = -1;
 
         for (int ft : unusedFeatures) {
-            std::vector<std::function<bool(const std::vector<double>)>> trialFeatures = bestFeatures;
-            trialFeatures.push_back(allFeatures[ft]);
+            std::vector<int> trialFeatures = bestFeatures;
+            trialFeatures.push_back(ft);
 
-            int tracked = classAUsingFeatures(dataset, trialFeatures);
-            double calcAccuracy = (double) tracked / dataset.size();
+            double calcAccuracy = valid.valid(trialFeatures, filePath);
 
             if (calcAccuracy > tempAccuracy) {
                 tempAccuracy = calcAccuracy;
@@ -73,18 +65,18 @@ void forwardSelection(const std::vector<std::vector<double>>& dataset, const std
             }
         }
 
-        if ((tempAccuracy > bestAccuracy) && (bestFeature != -1)) {
+        if ((tempAccuracy >= bestAccuracy) && (bestFeature != -1)) {
             selectedFeatures.push_back(bestFeature);
-            bestFeatures.push_back(allFeatures[bestFeature]);
+            bestFeatures.push_back(bestFeature);
             bestAccuracy = tempAccuracy;
-            std::cout << "Feature set " << ftsToString(usedFeatures) << " was best, accuracy is " << bestAccuracy * 100.0 << "%" << std::endl << std::endl;
+            std::cout << "Feature set " << ftsToString(usedFeatures) << " was best, accuracy is " << bestAccuracy * 100.0 << "%" << std::endl;
         }
-        if ((tempAccuracy <= bestAccuracy && (bestFeature != -1))) {
+        if ((tempAccuracy < bestAccuracy && (bestFeature != -1))) {
             std::cout << "(Warning, Accuracy has decreased!)" << std::endl;
-            // break;
+            break;
         }
     }
-    // print: Finished search!! The best feature subset is {4,1,2}, which has an accuracy of 76.4%
-    std::cout << std::endl << "Finished search!! The best feature subset is " << ftsToString(selectedFeatures) << ", which has an accuracy of " << bestAccuracy * 100.0 << "%" << std::endl;
+    
+    std::cout << std::endl << std::endl << "Finished search!! The best feature subset is " << ftsToString(bestFeatures) << ", which has an accuracy of " << bestAccuracy * 100.0 << "%";
+    return bestFeatures;
 }
-#endif
