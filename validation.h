@@ -7,12 +7,13 @@ class Validation
 {
     public:
 
+    // valid returns the accuracy of a subset of features given a dataset in a file
     float valid(std::vector<int> featureIndices, std::string filePath) {
         float accuracy;
         int accuratePredictionCounter = 0;
         int totalDatapoints = 0;
 
-        Trainer model(filePath);
+        Trainer model(filePath); // we use the same training set/model for LOOCV, but skip over the test subject (leaving one out)
         totalDatapoints = model.getTrainingSet().size();
 
         int i = 1;

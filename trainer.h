@@ -1,3 +1,4 @@
+
 #pragma once
 #include <vector>
 #include <fstream>
@@ -5,10 +6,11 @@
 #include <cmath>
 #include <iostream>
 
-#define CLASSA_LABEL 1.0f
-#define CLASSB_LABEL 2.0f
-#define FEATURE_COUNT 40
+#define CLASSA_LABEL 0.0f
+#define CLASSB_LABEL 1.0f
+#define FEATURE_COUNT 6
 
+// Datapoint class for representing entries in our dataset, with helpers to get relevant info (feature, index, label, etc.)
 struct Datapoint { 
     const std::vector<float> features;
     const int classLabel;
@@ -27,6 +29,7 @@ struct Datapoint {
     float getFeatureByIndex(int idx) { return features.at(idx); }
 };
 
+// Calculates the euclidean distance between two Datapoints given a set of features.
 float calculateEuclideanDistance(Datapoint a, Datapoint b,  std::vector<int> featureIndices) {
     float sum = 0.0f;
     float delta;
@@ -37,6 +40,7 @@ float calculateEuclideanDistance(Datapoint a, Datapoint b,  std::vector<int> fea
     return sqrt(sum);
 }
 
+// Trainer represents the training dataset and test methods.
 struct Trainer {
     const std::vector<Datapoint> trainingSet;
 
@@ -45,6 +49,7 @@ struct Trainer {
     
     std::vector<Datapoint> getTrainingSet() { return trainingSet; }
     
+    // Test method returns our model's predicted label using 1-NN algorithm
     int test(Datapoint testPoint, std::vector<int> featureIndices) {
         int predictedLabel = -1;
         float closestDistance = -1.0f; 
@@ -62,6 +67,7 @@ struct Trainer {
 
     private:
 
+        // loadTrainingSet handles file stream to retrieve dataset entries, initiating each entry as a Datapoint 
         std::vector<Datapoint> loadTrainingSet(std::string filePath) {
             std::ifstream file{filePath};
 
@@ -92,11 +98,13 @@ struct Trainer {
                 trainingSet.push_back(newPoint);
             }
 
+            // Before finalizing the training set, we normalize the dataset
             std::vector<Datapoint> normalizedTrainingSet = normalizeDataset(trainingSet);
             return normalizedTrainingSet;
         }
 
 
+        // normalizeDataset normalizes our data entries using Z-score normalization to eliminate inaccuracies of feature selection
         std::vector<Datapoint> normalizeDataset(std::vector<Datapoint>& dataset) {
 
             std::vector<Datapoint> normalizedDataset;
@@ -155,4 +163,3 @@ struct Trainer {
 
 
 };
-
